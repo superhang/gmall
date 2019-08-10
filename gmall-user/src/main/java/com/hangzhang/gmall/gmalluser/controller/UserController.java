@@ -1,8 +1,9 @@
 package com.hangzhang.gmall.gmalluser.controller;
 
-import com.hangzhang.gmall.gmalluser.bean.UmsMember;
-import com.hangzhang.gmall.gmalluser.bean.UmsMemberReceiveAddress;
-import com.hangzhang.gmall.gmalluser.service.UserService;
+
+import com.beans.UmsMember;
+import com.beans.UmsMemberReceiveAddress;
+import com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

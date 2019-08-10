@@ -1,7 +1,8 @@
-package com.hangzhang.gmall.gmalluser.service;
+package com.service;
 
-import com.hangzhang.gmall.gmalluser.bean.UmsMember;
-import com.hangzhang.gmall.gmalluser.bean.UmsMemberReceiveAddress;
+
+import com.beans.UmsMember;
+import com.beans.UmsMemberReceiveAddress;
 
 import java.util.List;
 

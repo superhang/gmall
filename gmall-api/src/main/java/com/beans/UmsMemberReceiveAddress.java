@@ -1,4 +1,4 @@
-package com.hangzhang.gmall.gmalluser.bean;
+package com.beans;
 
 import javax.persistence.Id;
 import java.io.Serializable;
