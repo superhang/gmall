@@ -4,8 +4,10 @@ import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.beans.PmsBaseAttrInfo;
 import com.beans.PmsBaseAttrValue;
+import com.beans.PmsBaseSaleAttr;
 import com.hangzhang.gmall.gmallmanageservice.mapper.PmsBaseAttrInfoMapper;
 import com.hangzhang.gmall.gmallmanageservice.mapper.PmsBaseAttrValueMapper;
+import com.hangzhang.gmall.gmallmanageservice.mapper.PmsBaseSaleAttrMapper;
 import com.service.AttrService;
 import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Example;
@@ -17,12 +19,21 @@ public class AttrServiceImpl implements AttrService {
     PmsBaseAttrInfoMapper pmsBaseAttrInfoMapper;
     @Autowired
     PmsBaseAttrValueMapper pmsBaseAttrValueMapper;
+    @Autowired
+    PmsBaseSaleAttrMapper pmsBaseSaleAttrMapper;
 
     @Override
     public List<PmsBaseAttrInfo> attrInfoList(String catalog3Id) {
         PmsBaseAttrInfo pmsBaseAttrInfo = new PmsBaseAttrInfo();
         pmsBaseAttrInfo.setCatalog3Id(catalog3Id);
-        return pmsBaseAttrInfoMapper.select(pmsBaseAttrInfo);
+        List<PmsBaseAttrInfo> select = pmsBaseAttrInfoMapper.select(pmsBaseAttrInfo);
+        for (PmsBaseAttrInfo pmsBaseAttrInfo1:select){
+            PmsBaseAttrValue pmsBaseAttrValue = new  PmsBaseAttrValue();
+            pmsBaseAttrValue.setAttrId(pmsBaseAttrInfo1.getId());
+            List<PmsBaseAttrValue> pmsBaseAttrValueInfos = pmsBaseAttrValueMapper.select(pmsBaseAttrValue);
+            pmsBaseAttrInfo1.setAttrValueList(pmsBaseAttrValueInfos);
+        }
+        return select;
     }
 
     @Override
@@ -57,7 +68,7 @@ public class AttrServiceImpl implements AttrService {
                 pmsBaseAttrValueMapper.insertSelective(pmsBaseAttrValue);
             }
 
-            return null;
+            return "success";
         }
 
 
@@ -68,5 +79,10 @@ public class AttrServiceImpl implements AttrService {
         PmsBaseAttrValue pmsBaseAttrValue = new PmsBaseAttrValue();
         pmsBaseAttrValue.setAttrId(attrId);
         return  pmsBaseAttrValueMapper.select(pmsBaseAttrValue);
+    }
+
+    @Override
+    public List<PmsBaseSaleAttr> baseSaleAttrList() {
+        return pmsBaseSaleAttrMapper.SELECTALL();
     }
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hangzhang.gmall.gmallmanageservice.mapper.PmsBaseSaleAttrMapper" >
+    <resultMap id="PmsBaseSaleAttr" type="com.beans.PmsBaseSaleAttr" />
+    <select id="SELECTALL" resultMap="PmsBaseSaleAttr" >
+            select * from pms_base_sale_attr
+    </select>
+</mapper>

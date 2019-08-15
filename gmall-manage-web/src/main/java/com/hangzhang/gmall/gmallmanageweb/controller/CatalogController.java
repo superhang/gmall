@@ -36,8 +36,8 @@ public class CatalogController {
     @RequestMapping("getCatalog3")
     @ResponseBody
     //查看前端请求接口，参数格式问题
-    public List<PmsBaseCatalog3> getCatalog3(String catalog3Id){
-        List<PmsBaseCatalog3> catalog3List =  catelogService.getCatelog3(catalog3Id);
+    public List<PmsBaseCatalog3> getCatalog3(String catalog2Id){
+        List<PmsBaseCatalog3> catalog3List =  catelogService.getCatelog3(catalog2Id);
         return  catalog3List;
     }
 }

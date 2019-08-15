@@ -36,11 +36,11 @@ public class CatelogServiceImpl implements CatelogService {
 
     @Override
     public List<PmsBaseCatalog3> getCatelog3(String id) {
-        PmsBaseCatalog3 p3 = new PmsBaseCatalog3();
-        p3.setCatalog2Id(id);
-        List<PmsBaseCatalog3> PmsBaseCatalog3List = pmsBaseCatalog3Mapper.select(p3) ;
-        return PmsBaseCatalog3List;
-//        List<PmsBaseCatalog3> PmsBaseCatalog3List = pmsBaseCatalog3Mapper.selectBycatalog2_id(id) ;
+//        PmsBaseCatalog3 p3 = new PmsBaseCatalog3();
+//        p3.setCatalog2Id(id);
+//        List<PmsBaseCatalog3> PmsBaseCatalog3List = pmsBaseCatalog3Mapper.select(p3) ;
 //        return PmsBaseCatalog3List;
+      List<PmsBaseCatalog3> PmsBaseCatalog3List = pmsBaseCatalog3Mapper.selectBycatalog2_id(id) ;
+      return PmsBaseCatalog3List;
     }
 }
