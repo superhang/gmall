@@ -15,6 +15,7 @@ public class PmsProductImage implements Serializable {
     private String id;
     @Column
     private String productId;
+
     @Column
     private String imgName;
     @Column

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Thymeleaf的也要引入标签规范-->
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+    hello thymeleaf! <br >
+    <!-- 取值 -->
+    <p th:text="${hello}"></p>
+    <!-- 循环 -->
+    <p th:each="str:${list}" th:text="${str}">
+    </p>
+    <!-- 判断 -->
+    <p th:if="1==1">woc</p>
+<!--    <td th:text="(${skuImage.id}=='10')?'是10':'不是10'">-->
+<!--    </td>-->
+    <!-- 页面引入 静态和动态 全部和部分-->
+    <div th:include="innerhtml::innerPart">
+
+    </div>
+    <!-- 传值给javascript-->
+</body>
+</html>

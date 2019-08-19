@@ -71,7 +71,7 @@
                 <version>${mybatis.version}</version>
             </dependency>
 
-            <!--springboot的前端框架 类似与jsp -->
+            <!--springboot的前端框架 类似与jsp thymeleaf -->
             <dependency>
                 <groupId>net.sourceforge.nekohtml</groupId>
                 <artifactId>nekohtml</artifactId>

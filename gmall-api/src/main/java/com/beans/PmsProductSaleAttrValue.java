@@ -18,7 +18,7 @@ public class PmsProductSaleAttrValue implements Serializable {
 
     @Column
     String saleAttrValueName;
-
+   //是否被选中的状态
     @Transient
     String isChecked;
 

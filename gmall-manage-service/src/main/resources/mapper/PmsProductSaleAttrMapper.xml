@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hangzhang.gmall.gmallmanageservice.mapper.PmsProductSaleAttrMapper" >
+
+    <select id="spuSaleAttrListCheckBySku" resultMap="selectspuSaleAttrListCheckBySku">
+            SELECT
+                sa.id as sa_id, sav.id as sav_id,
+                sa.product_id as sa_productId,
+                sa.sale_attr_id as sa_saleAttrId,
+                sa.sale_attr_name as sa_AttrValueName,
+                sav.product_id as sav_productId,
+                sav.sale_attr_id as sav_saleAttrId,
+                sav.sale_attr_value_name as sav_AttrValueName,
+                if(ssav.sku_id,1,0) as sav_isChecked
+            FROM
+                pms_product_sale_attr sa
+            INNER JOIN pms_product_sale_attr_value sav ON sa.product_id = sav.product_id
+            AND sa.sale_attr_id = sav.sale_attr_id
+            AND sa.product_id = #{productId}
+            LEFT JOIN pms_sku_sale_attr_value ssav ON sav.id = ssav.sale_attr_value_id
+            AND ssav.sku_id = #{skuId}
+     </select>
+    <resultMap id="selectspuSaleAttrListCheckBySku" type="com.beans.PmsProductSaleAttr" autoMapping="true">
+        <result column="sa_id" property="id"></result>
+        <result column="sa_productId" property="productId"></result>
+        <result column="sa_saleAttrId" property="saleAttrId"></result>
+        <result column="sa_AttrValueName" property="saleAttrName"></result>
+        <collection property="spuSaleAttrValueList" ofType="com.beans.PmsProductSaleAttrValue">
+            <result column="sav_id" property="id"></result>
+            <result column="sav_productId" property="productId"></result>
+            <result column="sav_saleAttrId" property="saleAttrId"></result>
+            <result column="sav_AttrValueName" property="saleAttrValueName"></result>
+            <result column="sav_isChecked" property="isChecked"></result>
+        </collection>
+    </resultMap>
+</mapper>
