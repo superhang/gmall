@@ -1,0 +1,13 @@
+package com.hangzhang.gmall.gmallsearchweb;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class GmallSearchWebApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(GmallSearchWebApplication.class, args);
+    }
+
+}

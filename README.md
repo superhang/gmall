@@ -12,3 +12,7 @@ gmall-manage-web project prot is 8081
 前台商品详细
 gmall-item-service project prot is 8072 (调用后台管理模块service)
 gmall-item-web project prot is 8082
+
+搜索引擎模块
+gmall-search-service project prot is 8074 
+gmall-search-web project prot is 8083
