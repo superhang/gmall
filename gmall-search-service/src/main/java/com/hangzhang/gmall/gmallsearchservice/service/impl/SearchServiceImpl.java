@@ -13,12 +13,15 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class SearchServiceImpl implements SearchService {
     @Autowired
@@ -26,7 +29,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public List<PmsSearchSkuInfo> list(PmsSearchParam pmsSearchParam) {
         String dslStr = getSearchDsl(pmsSearchParam);
-//        System.out.println(dslStr);
+        System.out.println(dslStr);
         Search build = new Search.Builder(dslStr).addIndex("gmallpms").addType("pmsSkuInfo").build();
         List<PmsSearchSkuInfo> pmsSearchSkuInfos = new ArrayList<>();
         SearchResult execute = null;
@@ -38,6 +41,13 @@ public class SearchServiceImpl implements SearchService {
                     hits) {
                 //total等等
                 PmsSearchSkuInfo source = hit.source;
+                if (StringUtils.isNotBlank(pmsSearchParam.getKeyword()) && hit.highlight.size()>0){
+                    //处理高亮
+                    Map<String, List<String>> highlight = hit.highlight;
+                    String skuName = highlight.get("skuName").get(0);
+                    source.setSkuName(skuName);//替换
+                }
+
                 pmsSearchSkuInfos.add(source);
             }
         } catch (IOException e) {
@@ -61,7 +71,6 @@ public class SearchServiceImpl implements SearchService {
         //filter
         if (!StringUtils.isBlank(catalog3Id)) {
             TermQueryBuilder termQueryBuilder = new TermQueryBuilder("catalog3Id", catalog3Id);
-//            System.out.println("---"+catalog3Id);
             boolQueryBuilder.filter(termQueryBuilder);
         }
         if (skuAttrValueList != null) {//判断是否有平台属性
@@ -85,7 +94,14 @@ public class SearchServiceImpl implements SearchService {
         //size
         searchSourceBuilder.size(20);
         //highlight 高亮
-        searchSourceBuilder.highlight(null);
+        HighlightBuilder highlightBuilder = new HighlightBuilder();
+        highlightBuilder.preTags("<em style=\"color:red;\">");     //前缀
+        highlightBuilder.postTags("</em>");                         //后缀
+        highlightBuilder.field("skuName");
+        searchSourceBuilder.highlight(highlightBuilder);
+        //aggs聚合  性能较差
+//        TermsBuilder groupby_attr = AggregationBuilders.terms("groupby_attr").field("skuAttrValueList.valueId");
+//        searchSourceBuilder.aggregation(groupby_attr);
         //sort
         searchSourceBuilder.sort("id", SortOrder.DESC);
         String dslStr = searchSourceBuilder.toString();
