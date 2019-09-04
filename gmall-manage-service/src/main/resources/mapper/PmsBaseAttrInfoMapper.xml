@@ -9,7 +9,7 @@
             pms_base_attr_info ba,
             pms_base_attr_value bv
         WHERE
-            ba.id = bv.id
+            ba.id = bv.attr_id
         AND bv.id IN (${join})
      </select>
     <resultMap id="selectAttrValueListByValueIdMap" type="com.beans.PmsBaseAttrInfo" autoMapping="true">

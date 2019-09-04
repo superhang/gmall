@@ -3,7 +3,6 @@ package com.hangzhang.gmall.gmallsearchservice.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.beans.PmsSearchParam;
 import com.beans.PmsSearchSkuInfo;
-import com.beans.PmsSkuAttrValue;
 import com.service.SearchService;
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Search;
@@ -29,7 +28,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public List<PmsSearchSkuInfo> list(PmsSearchParam pmsSearchParam) {
         String dslStr = getSearchDsl(pmsSearchParam);
-        System.out.println(dslStr);
+//        System.out.println(dslStr);
         Search build = new Search.Builder(dslStr).addIndex("gmallpms").addType("pmsSkuInfo").build();
         List<PmsSearchSkuInfo> pmsSearchSkuInfos = new ArrayList<>();
         SearchResult execute = null;
@@ -59,7 +58,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     private String getSearchDsl(PmsSearchParam pmsSearchParam) {
-        List<PmsSkuAttrValue> skuAttrValueList = pmsSearchParam.getSkuAttrValueList();
+        String[] skuAttrValueList = pmsSearchParam.getValueId();
         String keyword = pmsSearchParam.getKeyword();
         String catalog3Id = pmsSearchParam.getCatalog3Id();
 
@@ -74,9 +73,9 @@ public class SearchServiceImpl implements SearchService {
             boolQueryBuilder.filter(termQueryBuilder);
         }
         if (skuAttrValueList != null) {//判断是否有平台属性
-            for (PmsSkuAttrValue pmsSkuAttrValue :
+            for (String pmsSkuAttrValue :
                     skuAttrValueList) {
-                TermQueryBuilder termQueryBuilder = new TermQueryBuilder("skuAttrValueList.valueId", pmsSkuAttrValue.getValueId());
+                TermQueryBuilder termQueryBuilder = new TermQueryBuilder("skuAttrValueList.valueId", pmsSkuAttrValue);
                 boolQueryBuilder.filter(termQueryBuilder);
             }
         }

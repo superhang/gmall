@@ -1,19 +1,15 @@
 package com.hangzhang.gmall.gmallsearchweb.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.beans.PmsBaseAttrInfo;
-import com.beans.PmsSearchParam;
-import com.beans.PmsSearchSkuInfo;
-import com.beans.PmsSkuAttrValue;
+import com.beans.*;
 import com.service.AttrService;
 import com.service.SearchService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class SearchController {
@@ -47,10 +43,91 @@ public class SearchController {
                 valueIdSet.add(valueId);
             }
         }
-        //mysql中查询
-        List<PmsBaseAttrInfo> pmsBaseAttrInfos= attrService.getAttrValueListByValueId(valueIdSet);
         map.put("skuLsInfoList",pmsSearchSkuInfoList);
+        //mysql中查询属性列表
+        List<PmsBaseAttrInfo> pmsBaseAttrInfos= attrService.getAttrValueListByValueId(valueIdSet);
         map.put("attrList",pmsBaseAttrInfos);
+
+        //去除当前url中valueid所在的属性组
+        String[] valueId = pmsSearchParam.getValueId();
+        if(valueId!=null){
+
+            for (String s : valueId) {
+                Iterator<PmsBaseAttrInfo> iterator = pmsBaseAttrInfos.iterator();
+                while(iterator.hasNext()){
+                    PmsBaseAttrInfo next = iterator.next();
+                    List<PmsBaseAttrValue> attrValueList = next.getAttrValueList();
+                    for (PmsBaseAttrValue pmsBaseAttrValue : attrValueList) {
+                        String id = pmsBaseAttrValue.getId();
+                            if(s.equals(id)){
+                                //删除当前valueId所在的属性组
+                                iterator.remove();
+                            }
+                        }
+                    }
+            }
+        }
+
+
+        //添加url
+        String urlParam = getUrlParam(pmsSearchParam);
+        map.put("urlParam",urlParam);
+
+
+        //添加keyword
+        String keyword = pmsSearchParam.getKeyword();
+        if(StringUtils.isNotBlank(keyword)){
+            map.put("keyword",keyword);
+        }
+
+        //面包屑
+        List<PmsSearchCrumb> pmsSearchCrumbs = new ArrayList<>();
+        if(valueId!=null){
+            //当前请求中包含属性的参数，每一个属性参数，都会生成一个面包屑
+            for (String id : valueId) {
+                PmsSearchCrumb pmsSearchCrumb = new PmsSearchCrumb();
+                //生成面包屑的参数
+                pmsSearchCrumb.setValueId(id);
+                pmsSearchCrumb.setValueName(id);
+                pmsSearchCrumb.setUrlParam(getUrlParam(pmsSearchParam,id));
+                pmsSearchCrumbs.add(pmsSearchCrumb);
+            }
+        }
+
+        map.put("attrValueSelectedList",pmsSearchCrumbs);
+
         return "list";
+    }
+
+    /**
+     * 依据传递参数进行url拼接(面包屑)  可变长度传参
+     * */
+    private String getUrlParam(PmsSearchParam pmsSearchParam,String ...delvalueId) {
+        String keyword = pmsSearchParam.getKeyword();
+        String catalog3Id = pmsSearchParam.getCatalog3Id();
+        String[] skuAttrValueList = pmsSearchParam.getValueId();
+        String urlParam = "";
+        if(StringUtils.isNotBlank(keyword)){
+            if(StringUtils.isNotBlank(urlParam)){
+                urlParam = urlParam+"&";
+            }
+            urlParam = urlParam+"keyword="+keyword;
+        }
+        if(StringUtils.isNotBlank(catalog3Id)){
+            if(StringUtils.isNotBlank(urlParam)){
+                urlParam = urlParam+"&";
+            }
+            urlParam = urlParam+"catalog3Id="+catalog3Id;
+        }
+        //累计添加的bug
+        if(skuAttrValueList!=null){
+            for (String valueId : skuAttrValueList) {
+                if(!valueId.equals(delvalueId)){
+                    urlParam = urlParam+"&valueId="+valueId;
+                }
+            }
+
+        }
+        return urlParam;
     }
 }
