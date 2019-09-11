@@ -20,3 +20,6 @@ gmall-search-web project prot is 8083
 购物车模块
 gmall-cart-service project prot is 8075 
 gmall-cart-web project prot is 8085
+
+用户认证中心(后台使用8070)
+gmall-passport-web  project prot is 8086

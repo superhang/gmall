@@ -1,13 +1,13 @@
-package com.hangzhang.gmall.gmallcartservice;
+package com.hangzhang.gmall.gmallpassportweb;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GmallCartServiceApplication {
+public class GmallPassportWebApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GmallCartServiceApplication.class, args);
+        SpringApplication.run(GmallPassportWebApplication.class, args);
     }
 
 }
