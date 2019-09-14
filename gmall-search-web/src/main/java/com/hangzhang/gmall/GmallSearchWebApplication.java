@@ -1,4 +1,4 @@
-package com.hangzhang.gmall.gmallsearchweb;
+package com.hangzhang.gmall;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

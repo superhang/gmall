@@ -2,6 +2,7 @@ package com.hangzhang.gmall.gmallsearchweb.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.beans.*;
+import com.hangzhang.gmall.annotations.LoginRequired;
 import com.service.AttrService;
 import com.service.SearchService;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +21,8 @@ public class SearchController {
 
 
     @RequestMapping("index")
+    //验证token，写进cookie
+    @LoginRequired(loginSuccess = false)
     public String index(){
         return "index";
     }

@@ -13,7 +13,9 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry){
-        registry.addInterceptor(authInterceptor).addPathPatterns("/**");
+        //排除springboot默认报错反射机制
+        registry.addInterceptor(authInterceptor).addPathPatterns("/**").excludePathPatterns("/error");
+
         super.addInterceptors(registry);
     }
 }

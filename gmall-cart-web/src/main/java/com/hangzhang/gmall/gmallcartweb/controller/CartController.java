@@ -31,14 +31,17 @@ public class CartController {
     //标识
     @LoginRequired(loginSuccess = true)
     public String toTrade(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
-         return "toTrade";
+        String memberId = (String) request.getAttribute("memberId");
+        String nickname = (String) request.getAttribute("nickname");
+        return "toTrade";
     }
 
     @RequestMapping("checkCart")
     @LoginRequired(loginSuccess = false)
     public String checkCart(String isChecked,String skuId, HttpServletRequest request, HttpServletResponse response, ModelMap modelMap){
 
-        String memberId = "8";
+        String memberId = (String) request.getAttribute("memberId");
+        String nickname = (String) request.getAttribute("nickname");
         OmsCartItem omsCartItem = new OmsCartItem();
         omsCartItem.setMemberId(memberId);
         omsCartItem.setProductSkuId(skuId);
@@ -59,7 +62,8 @@ public class CartController {
     public String cartList( HttpServletRequest request, HttpServletResponse response, ModelMap modelMap){
         List<OmsCartItem> omsCartItems = new ArrayList<>();
 
-        String memberId = "8";
+        String memberId = (String) request.getAttribute("memberId");
+        String nickname = (String) request.getAttribute("nickname");
         if(StringUtils.isNotBlank(memberId)){
             //已经登录查询数据库（缓存查询）
             omsCartItems = cartService.cartList(memberId);
@@ -116,9 +120,10 @@ public class CartController {
         omsCartItem.setProductSkuId(skuId);
         omsCartItem.setQuantity(new BigDecimal(num));
         List<OmsCartItem> omsCartItems = new ArrayList<>();
-        //判断用户是否登录
-        String memberId = "8";
-
+        //判断用户是否登录,获取用户ID
+        //String memberId = "8";//request.getAttribute("memberId");
+        String memberId = (String) request.getAttribute("memberId");
+        String nickname = (String) request.getAttribute("nickname");
         //决定走cookie还是db
         /**
          * Db:cartListDb 有主键和用户id
