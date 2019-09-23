@@ -3,7 +3,7 @@ package com.beans;
 import javax.persistence.Id;
 import java.io.Serializable;
 
-public class UmsMemberReceiveAddress implements Serializable {
+public class  UmsMemberReceiveAddress implements Serializable {
 
     @Id
     private String id;

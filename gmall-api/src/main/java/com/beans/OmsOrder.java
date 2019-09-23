@@ -1,13 +1,17 @@
 package com.beans;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class OmsOrder implements Serializable {
 
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private String id;
     private String    memberId;
@@ -53,6 +57,18 @@ public class OmsOrder implements Serializable {
     private Date         receiveTime;
     private Date commentTime;
     private Date        modifyTime;
+
+
+    @Transient
+    List<OmsOrderItem> omsOrderItems ;
+
+    public List<OmsOrderItem> getOmsOrderItems() {
+        return omsOrderItems;
+    }
+
+    public void setOmsOrderItems(List<OmsOrderItem> omsOrderItems) {
+        this.omsOrderItems = omsOrderItems;
+    }
 
     public String getId() {
         return id;

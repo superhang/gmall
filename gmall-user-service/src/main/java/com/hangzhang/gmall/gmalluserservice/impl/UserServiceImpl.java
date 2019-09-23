@@ -12,7 +12,6 @@ import com.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
-import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 //使用rpc，dubbo扫描
@@ -41,14 +40,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UmsMemberReceiveAddress> getReceiveAddressByMemberId(String menberId) {
         //way1
-//        UmsMemberReceiveAddress UmsMemberReceiveAddress = new UmsMemberReceiveAddress();
-//        UmsMemberReceiveAddress.setMemberId(menberId);
-//        List<com.hangzhang.gmall.gmalluser.bean.UmsMemberReceiveAddress> select = umsMemberReceiveAddressMapper.select(UmsMemberReceiveAddress);
-        //way2
-        Example e = new Example(UmsMemberReceiveAddress.class);
-        e.createCriteria().andEqualTo( "memberId",menberId);
-        List<UmsMemberReceiveAddress> umsMemberReceiveAddresses = umsMemberReceiveAddressMapper.selectByExample(e);
-        return umsMemberReceiveAddresses;
+        UmsMemberReceiveAddress UmsMemberReceiveAddress = new UmsMemberReceiveAddress();
+        UmsMemberReceiveAddress.setMemberId(menberId);
+        List<UmsMemberReceiveAddress> select = umsMemberReceiveAddressMapper.select(UmsMemberReceiveAddress);
+        return select;
     }
 
     @Override
@@ -62,7 +57,7 @@ public class UserServiceImpl implements UserService {
                  * 先通过用户名找密码，然后通过用户名密码找用户信息
                  * */
                 //User:password:info    username
-                String userinfo = jedis.get("user:" + umsMember.getPassword() + ":info");
+                String userinfo = jedis.get("user:" + umsMember.getPassword()+umsMember.getUsername() + ":info");
                 if(StringUtils.isNotBlank(userinfo)){
                     //密码正确
                     UmsMember umsMemberFromCache = JSON.parseObject(userinfo, UmsMember.class);
@@ -72,7 +67,7 @@ public class UserServiceImpl implements UserService {
             //redis中没有找到缓存或者连接redis失败
             UmsMember umsMemberFromDb = loginFromDb(umsMember);
             if(umsMemberFromDb!=null){
-                jedis.setex("user:" + umsMember.getPassword() + ":info",60*60*24,JSON.toJSONString(umsMemberFromDb));
+                jedis.setex("user:" + umsMember.getPassword()+umsMember.getUsername() + ":info",60*60*24,JSON.toJSONString(umsMemberFromDb));
             }
             return umsMemberFromDb;
 
@@ -87,6 +82,26 @@ public class UserServiceImpl implements UserService {
         Jedis jedis = redisUtil.getJedis();
         jedis.setex("user:" + id + ":token",60*60*24,token);
         jedis.close();
+    }
+
+    @Override
+    public UmsMember addOauthUser(UmsMember umsMember) {
+        userMapper.insertSelective(umsMember);
+        return umsMember;
+    }
+
+    @Override
+    public UmsMember checkOauthUser(UmsMember usercheck) {
+        UmsMember umsMember = userMapper.selectOne(usercheck);
+        return umsMember;
+    }
+
+    @Override
+    public UmsMemberReceiveAddress getReceiveAddressById(String receiveAddressId) {
+        UmsMemberReceiveAddress umsMemberReceiveAddress = new UmsMemberReceiveAddress();
+        umsMemberReceiveAddress.setId(receiveAddressId);
+        UmsMemberReceiveAddress umsMemberReceiveAddress1 = umsMemberReceiveAddressMapper.selectOne(umsMemberReceiveAddress);
+        return   umsMemberReceiveAddress1;
     }
 
     private UmsMember loginFromDb(UmsMember umsMember) {

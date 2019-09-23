@@ -23,3 +23,10 @@ gmall-cart-web project prot is 8085
 
 用户认证中心(后台使用8070)
 gmall-passport-web  project prot is 8086
+
+订单模块
+gmall-order-web  project prot is 8087
+gmall-order-service project prot is 8077
+
+支付模块
+gmall-payment project prot is 8088(web和service整合到一起)

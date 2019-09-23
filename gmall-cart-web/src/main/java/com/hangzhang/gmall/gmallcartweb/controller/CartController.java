@@ -27,14 +27,7 @@ public class CartController {
     @Reference
     SkuService skuService;
 
-    @RequestMapping("toTrade")
-    //标识
-    @LoginRequired(loginSuccess = true)
-    public String toTrade(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
-        String memberId = (String) request.getAttribute("memberId");
-        String nickname = (String) request.getAttribute("nickname");
-        return "toTrade";
-    }
+
 
     @RequestMapping("checkCart")
     @LoginRequired(loginSuccess = false)
