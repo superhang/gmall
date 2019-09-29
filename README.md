@@ -1,9 +1,10 @@
 # gmall
 A project of study B2C
 2019-08-08 19:03 add a demo to test SpringBoot
+
 用户模块
 gmall-user-service project prot is 8070
-gmall-user-web project prot is 8080
+gmall-user-web project prot is 8020
 
 后台管理模块
 gmall-manage-service project prot is 8071

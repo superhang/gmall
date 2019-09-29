@@ -6,12 +6,16 @@ import com.beans.OmsOrder;
 import com.beans.OmsOrderItem;
 import com.hangzhang.gmall.gmallorderservice.mapper.OmsOrderItemMapper;
 import com.hangzhang.gmall.gmallorderservice.mapper.OmsOrderMapper;
+import com.hangzhang.gmall.mq.ActiveMQUtil;
 import com.hangzhang.gmall.util.RedisUtil;
 import com.service.CartService;
 import com.service.OrderService;
+import org.apache.activemq.command.ActiveMQMapMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
+import tk.mybatis.mapper.entity.Example;
 
+import javax.jms.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +27,9 @@ public class OrderServiceImpl implements OrderService {
     OmsOrderMapper omsOrderMapper;
     @Autowired
     OmsOrderItemMapper omsOrderItemMapper;
+    @Autowired
+    ActiveMQUtil activeMQUtil;
+
 
     //远程注入购物车服务
     @Reference
@@ -85,6 +92,63 @@ public class OrderServiceImpl implements OrderService {
             //cartService.del();
         }
 
+    }
+
+    @Override
+    public OmsOrder getOrderByoutTradeNo(String outTradeNo) {
+        OmsOrder omsOrder = new OmsOrder();
+        omsOrder.setOrderSn(outTradeNo);
+        OmsOrder omsOrder1 = omsOrderMapper.selectOne(omsOrder);
+        return omsOrder1;
+    }
+
+    @Override
+    public void updateOrder(OmsOrder omsOrder) {
+        Example e = new Example(OmsOrder.class);
+        e.createCriteria().andEqualTo("orderSn",omsOrder.getOrderSn());
+
+        OmsOrder omsOrder1 = new OmsOrder();
+        omsOrder1.setStatus("1");
+        omsOrder1.setOrderSn(omsOrder.getOrderSn());
+
+
+        //发送一个订单已支付的队列，提供给库存消费
+        Connection connection = null;
+        Session session = null;
+        try {
+            connection = activeMQUtil.getConnectionFactory().createConnection();
+            session = connection.createSession(true, Session.SESSION_TRANSACTED);
+        } catch (JMSException ex) {
+            ex.printStackTrace();
+        }
+        try{
+            //更新订单状态
+            omsOrderMapper.updateByExampleSelective(omsOrder1,e);
+
+            Queue payment_success_queue = session.createQueue("ORDER_PAY_QUEUE");
+            MessageProducer producer = session.createProducer(payment_success_queue);
+
+            //信息结构  字符串文本  hash结构
+            //TextMessage textMessage = new ActiveMQTextMessage();
+            MapMessage mapMessage = new ActiveMQMapMessage();
+//            mapMessage.setString("out_trade_no",paymentInfo.getOrderSn());
+
+            producer.send(mapMessage);
+            session.commit();
+        }catch (Exception e1){
+            //消息回滚
+            try {
+                session.rollback();
+            } catch (JMSException ex) {
+                ex.printStackTrace();
+            }finally {
+                try {
+                    connection.close();
+                } catch (JMSException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 
 

@@ -43,6 +43,21 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.alipay.sdk/alipay-sdk-java   国外版本-->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+<!--        &lt;!&ndash; 国内版本 自己下载sdk&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.alipay</groupId>-->
+<!--            <artifactId>alipay-sdk</artifactId>-->
+<!--            <version></version>-->
+<!--        </dependency>-->
+
+
     </dependencies>
 
     <build>
