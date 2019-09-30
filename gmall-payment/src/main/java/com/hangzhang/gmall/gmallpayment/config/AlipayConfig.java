@@ -14,11 +14,11 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:alipay.properties")
 public class AlipayConfig {
     @Value("${alipay_url}")
-    private String alipay_url;
+    public static  String alipay_url;
     @Value("${app_private_key}")
-    private String app_private_key;
+    public static  String app_private_key;
     @Value("${app_id}")
-    private String app_id;
+    public static  String app_id;
     public final static String format="json";
     public final static String charset="utf-8";
     public final static String sign_type="RSA2";

@@ -52,6 +52,7 @@ public class paymentController {
 
         //通过支付宝的paramMap进行签名验证，2.0版本的接口屏蔽参数导致无法验标签
         if(StringUtils.isNotBlank(sign)){
+
             //验标签成功
             paymentInfo.setOrderSn(out_trade_no);
             paymentInfo.setPaymentStatus("已支付");
@@ -109,6 +110,10 @@ public class paymentController {
         paymentInfo.setTotalAmount(totalAmount);
 
         paymentService.savePaymentInfo(paymentInfo);
+
+        //向消息中间件发送一个检查支付状态（支付服务消费）队列  spring定时任务：不灵活  连续发五次
+        paymentService.sendDelayPaymentResultCheckQueue(outTradeNo,5);
+
 
         //提交请求到支付宝
         return form;
